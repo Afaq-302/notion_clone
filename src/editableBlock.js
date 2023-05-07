@@ -42,7 +42,7 @@ const EditableBlock = (props) => {
         e.preventDefault();
         props.addBlock({ id: props.id, ref: contentEditable.current });
       }
-      sendBlock();
+      // sendBlock();
     }
     if (e.key === "Backspace" && !htmlRef.current) {
       e.preventDefault();
@@ -93,29 +93,29 @@ const EditableBlock = (props) => {
   // })
 
   //POST REQUEST
-  const sendBlock = async () => {
-    try {
-      console.log('html', htmlRef.current)
-      console.log('tag', tag)
+  // const sendBlock = async () => {
+  //   try {
+  //     console.log('html', htmlRef.current)
+  //     console.log('tag', tag)
 
-      const block = {
-        id: props.id,
-        html: htmlRef.current,
-        tag: tag || 'p'
-      };
+  //     const block = {
+  //       id: props.id,
+  //       html: htmlRef.current,
+  //       tag: tag || 'p'
+  //     };
 
-      const response = await axios.post("http://localhost:1337/api/blocks", {
-        data: { content: JSON.stringify(block) }
-      }, {
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-      console.log("Response:", response.data); // Optional: Handle the response
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  //     const response = await axios.post("http://localhost:1337/api/blocks", {
+  //       data: { content: JSON.stringify(block) }
+  //     }, {
+  //       headers: {
+  //         "Content-Type": "application/json"
+  //       }
+  //     });
+  //     console.log("Response:", response.data); // Optional: Handle the response
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
 
   return (

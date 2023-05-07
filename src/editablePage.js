@@ -75,19 +75,19 @@ function EditablePage() {
   );
 
   // GET REQUEST
-  useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const response = await axios.get("http://localhost:1337/api/blocks");
-        setItems(response.data.data);
-        // console.log('items', response.data.data)
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchItems = async () => {
+  //     try {
+  //       const response = await axios.get("http://localhost:1337/api/blocks");
+  //       setItems(response.data.data);
+  //       // console.log('items', response.data.data)
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
 
-    fetchItems();
-  }, []);
+  //   fetchItems();
+  // }, []);
 
   // const items = [
   //   { id: 1, tag: "p", html: "First item" },
@@ -96,7 +96,7 @@ function EditablePage() {
 
   return (
     <div className="Page">
-      {items.map((item) => (
+      {/* {items.map((item) => (
         <EditableBlock
           key={item.id}
           id={item.id}
@@ -106,7 +106,7 @@ function EditablePage() {
           addBlock={addBlockHandler}
           deleteBlock={deleteBlockHandler}
         />
-      ))}
+      ))} */}
       {blocks.map((block) => (
         <EditableBlock
           key={block.id}
