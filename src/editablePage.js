@@ -79,7 +79,7 @@ function EditablePage() {
   //   const fetchItems = async () => {
   //     try {
   //       const response = await axios.get("http://localhost:1337/api/blocks");
-  //       setItems(response.data.data);
+  //       // setItems(response.data.data);
   //       // console.log('items', response.data.data)
   //     } catch (error) {
   //       console.error(error);

@@ -39,8 +39,10 @@ const EditableBlock = (props) => {
     }
     if (e.key === "Enter") {
       if (previousKey !== "Shift" && !selectMenuIsOpen) {
-        e.preventDefault();
-        props.addBlock({ id: props.id, ref: contentEditable.current });
+        if (!e.shiftKey) {
+          e.preventDefault();
+          props.addBlock({ id: props.id, ref: contentEditable.current });
+        }
       }
       // sendBlock();
     }
@@ -69,6 +71,8 @@ const EditableBlock = (props) => {
     setSelectMenuIsOpen(false);
     setSelectMenuPosition({ x: null, y: null });
     document.removeEventListener("click", closeSelectMenuHandler);
+    contentEditable.current.focus(); 
+    setCaretToEnd(contentEditable.current);
   };
 
   const tagSelectionHandler = (tag) => {
@@ -78,34 +82,23 @@ const EditableBlock = (props) => {
     closeSelectMenuHandler();
   };
 
-  // useEffect(() => {
-  //   const fetchBlocks = async () => {
-  //     try {
-  //       const response = await axios.get("http://localhost:1337/api/blocks");
-  //       // setBlocks(response.data); // Assuming the response data is an array of blocks
-  //       console.log(response.data.data); // Assuming the response data is an array of blocks
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-
-  //   fetchBlocks();
-  // })
 
   //POST REQUEST
   // const sendBlock = async () => {
   //   try {
-  //     console.log('html', htmlRef.current)
-  //     console.log('tag', tag)
+  //     const currentHtml = htmlRef.current;
+  //     const currentTag = tag;
 
   //     const block = {
   //       id: props.id,
-  //       html: htmlRef.current,
-  //       tag: tag || 'p'
+  //       attributes: {
+  //         html: 'This is dummy text',
+  //         tag: 'p'
+  //       }
   //     };
 
   //     const response = await axios.post("http://localhost:1337/api/blocks", {
-  //       data: { content: JSON.stringify(block) }
+  //       data: { block }
   //     }, {
   //       headers: {
   //         "Content-Type": "application/json"
