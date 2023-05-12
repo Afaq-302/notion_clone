@@ -61,16 +61,17 @@ const SelectMenu = (props) => {
   };
 
   useEffect(() => {
+    const handleKeyDown = (e) => keyDownHandler(e);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [keyDownHandler]);
+
+  useEffect(() => {
     const updatedItems = matchSorter(allowedTags, command, { keys: ["tag"] });
     setItems(updatedItems);
   }, [command]);
-
-  useEffect(() => {
-    document.addEventListener("keydown", keyDownHandler);
-    return () => {
-      document.removeEventListener("keydown", keyDownHandler);
-    };
-  }, []);
 
   const x = props.position.x;
   const y = props.position.y - MENU_HEIGHT;

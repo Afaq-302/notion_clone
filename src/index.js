@@ -4,6 +4,7 @@ import EditablePage from "./editablePage";
 import { createRoot } from 'react-dom/client';
 import "./styles.css"
 
+
 const container = document.getElementById("root");
 const root = createRoot(container); // createRoot(container!) if you use TypeScript
 root.render(
@@ -15,8 +16,8 @@ root.render(
         👋
       </span>{" "}
       You can add content below.
-      {/* Type <span className="Code">/</span> to see
-      available elements. */}
+      Type <span className="Code">/</span> to see
+      available commands.
     </p>
     <EditablePage />
   </React.StrictMode>,

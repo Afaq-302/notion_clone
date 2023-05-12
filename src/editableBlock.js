@@ -8,7 +8,7 @@ import axios from "axios";
 const CMD_KEY = "/";
 
 const EditableBlock = (props) => {
-
+  console.log("Props.tag", props)
   const [htmlBackup, setHtmlBackup] = useState(null);
   const htmlRef = useRef(props.html || "");
   const [tag, setTag] = useState("p");
@@ -30,9 +30,21 @@ const EditableBlock = (props) => {
   }, [tag, props.html, props.tag]);
 
   const onChangeHandler = (e) => {
-    htmlRef.current = e.target.value;
+    const inputValue = e.target.value;
+    let updatedValue = inputValue;
+  
+    if (!selectMenuIsOpen) {
+      const slashIndex = inputValue.lastIndexOf(CMD_KEY);
+      const nextCharacterIndex = slashIndex + CMD_KEY.length;
+  
+      if (slashIndex !== -1 && nextCharacterIndex < inputValue.length) {
+        updatedValue = inputValue.slice(0, slashIndex) + inputValue.slice(nextCharacterIndex);
+      }
+    }
+  
+    htmlRef.current = updatedValue;
   };
-
+  
   const onKeyDownHandler = (e) => {
     if (e.key === CMD_KEY) {
       setHtmlBackup(htmlRef.current);
@@ -42,20 +54,24 @@ const EditableBlock = (props) => {
         if (!e.shiftKey) {
           e.preventDefault();
           props.addBlock({ id: props.id, ref: contentEditable.current });
+          contentEditable.current.focus(); // Set focus back to contentEditable after Enter is pressed
         }
       }
-      // sendBlock();
     }
     if (e.key === "Backspace" && !htmlRef.current) {
       e.preventDefault();
-      props.deleteBlock({ id: props.id, ref: contentEditable.current });
+      // deleteBlock();
     }
     setPreviousKey(e.key);
   };
+  
+  
 
   const onKeyUpHandler = (e) => {
     if (e.key === CMD_KEY) {
-      openSelectMenuHandler();
+      if (!selectMenuIsOpen) {
+        openSelectMenuHandler();
+      }
     }
   };
 
@@ -67,48 +83,71 @@ const EditableBlock = (props) => {
   };
 
   const closeSelectMenuHandler = () => {
-    setHtmlBackup(null);
     setSelectMenuIsOpen(false);
     setSelectMenuPosition({ x: null, y: null });
     document.removeEventListener("click", closeSelectMenuHandler);
-    contentEditable.current.focus(); 
+    contentEditable.current.focus();
     setCaretToEnd(contentEditable.current);
   };
+
 
   const tagSelectionHandler = (tag) => {
     setTag(tag);
-    htmlRef.current = htmlBackup;
-    setCaretToEnd(contentEditable.current);
+    htmlRef.current = htmlRef.current.replace(CMD_KEY, ""); // Remove the CMD_KEY ("/") character from the HTML content
     closeSelectMenuHandler();
+    setTimeout(() => {
+      contentEditable.current.focus(); // Set focus back to contentEditable after the event handling is completed
+      setCaretToEnd(contentEditable.current); // Set the cursor to the end of the content
+    }, 0);
   };
+  
+  
 
-
-  //POST REQUEST
-  // const sendBlock = async () => {
+  //DELETE REQUEST
+  // const deleteBlock = async () => {
   //   try {
-  //     const currentHtml = htmlRef.current;
-  //     const currentTag = tag;
+  //     console.log("Delete Request Made! + deleteBlock");
+  //     const response = await axios.delete(`http://localhost:1337/api/blocks/${props.id}`);
 
-  //     const block = {
-  //       id: props.id,
-  //       attributes: {
-  //         html: 'This is dummy text',
-  //         tag: 'p'
-  //       }
-  //     };
-
-  //     const response = await axios.post("http://localhost:1337/api/blocks", {
-  //       data: { block }
-  //     }, {
-  //       headers: {
-  //         "Content-Type": "application/json"
-  //       }
-  //     });
   //     console.log("Response:", response.data); // Optional: Handle the response
+  //     props.deleteBlock(props.id); // Call props.deleteBlock with props.id only
+
+
   //   } catch (error) {
   //     console.error(error);
   //   }
   // };
+
+  //POST REQUEST
+  // ### Fix the focus losing after something is selected from the Menu
+  // const sendBlock = async () => {
+  //   try {
+  //     if (htmlBackup !== null) {
+  //       const block = {
+  //         html: htmlRef.current,
+  //         tag: props.tag
+  //       };
+
+  //       const response = await axios.post(
+  //         "http://localhost:1337/api/blocks",
+  //         { data: block },
+  //         {
+  //           headers: {
+  //             "Content-Type": "application/json"
+  //           }
+  //         }
+  //       );
+  //       console.log("Response:", response.data); // Optional: Handle the response
+  //     } else {
+  //       // Restore the original html if no menu item was selected
+  //       htmlRef.current = htmlBackup;
+  //       setHtmlBackup(null);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
 
 
   return (
@@ -128,6 +167,7 @@ const EditableBlock = (props) => {
         onChange={onChangeHandler}
         onKeyDown={onKeyDownHandler}
         onKeyUp={onKeyUpHandler}
+        
       />
     </>
   );
